@@ -9,12 +9,7 @@ import toast, { Toaster } from 'react-hot-toast';
 
 
 const IncaricatoSelect = ( { ticket } : { ticket: Ticket} ) => {
-    const { data: utenti, error, isLoading} = useQuery<User[]>({
-        queryKey: ['utenti'],
-        queryFn: async () =>  axios.get<User[]>('/api/utenti').then((res) => res.data),
-        staleTime: 60 * 1000,    // La lista degli utenti viene cachata e tenuta buona per 60 secondi
-        retry: 3,                // Se la richiesta fallisce, viene ritentata 3 volte
-    })
+    const { data: utenti, error, isLoading} = useUtenti();
 
     if(isLoading) 
         return <Skeleton />
@@ -22,20 +17,22 @@ const IncaricatoSelect = ( { ticket } : { ticket: Ticket} ) => {
     if(error) 
         return null;
 
+    const assenaTicket = async (userId: string) => {
+        try{
+            await axios.patch(`/api/tickets/${ticket.id}`, { 
+                incaricatoId:  (userId !== "NonAssegnato" ? userId : null) 
+            })
+        }
+        catch(error){
+            toast.error('Errore durante l\'assegnazione del ticket!')
+        }
+    }
+
     return (
         <>
             <Select.Root 
                 defaultValue={ticket.incaricatoId || ''}
-                onValueChange={async (userId) => {
-                    try{
-                        await axios.patch(`/api/tickets/${ticket.id}`, { 
-                            incaricatoId:  (userId !== "NonAssegnato" ? userId : null) 
-                        })
-                    }
-                    catch(error){
-                        toast.error('Errore durante l\'assegnazione del ticket!')
-                    }
-                }}
+                onValueChange={assenaTicket}
             >
                 <Select.Trigger placeholder='Assegna...' />
                 <Select.Content>
@@ -54,5 +51,14 @@ const IncaricatoSelect = ( { ticket } : { ticket: Ticket} ) => {
         </>
     )
 }
+
+//Creo custom hook per scaricare gli utenti con TanStack
+const useUtenti = () => useQuery<User[]>({
+    queryKey: ['utenti'],
+    queryFn: async () =>  
+        axios.get<User[]>('/api/utenti').then((res) => res.data),
+    staleTime: 60 * 1000 * 60,    // La lista degli utenti viene cachata e tenuta buona per 60 secondi
+    retry: 3,                // Se la richiesta fallisce, viene ritentata 3 volte
+})
 
 export default IncaricatoSelect
