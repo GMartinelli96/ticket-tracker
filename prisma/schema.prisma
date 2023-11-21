@@ -16,6 +16,9 @@ model Ticket {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  incaricatoId String? @db.VarChar(255)
+  incaricato   User?   @relation(fields: [incaricatoId], references: [id])
 }
 
 enum TicketStato {
@@ -59,6 +62,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  tickets       Ticket[]
 }
 
 model VerificationToken {
