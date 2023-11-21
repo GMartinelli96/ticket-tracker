@@ -1,6 +1,8 @@
 import { ticketSchema } from "@/app/validationSchemas";
+import { authOptions } from "@/lib/auth";
 import prisma from "@/prisma/client";
 import { request } from "http";
+import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -8,6 +10,9 @@ export async function PATCH(
     { params }: { params: { id: string } } 
 ) {
     try{
+        const session = await getServerSession(authOptions);
+        if(!session)
+            return NextResponse.json("Unauthorized", {status: 401});
 
         const body = await req.json();
         const validation = ticketSchema.safeParse(body);
@@ -45,6 +50,10 @@ export async function DELETE(
     { params }: { params: { id: string } } 
 ) {
     try{
+        const session = await getServerSession(authOptions);
+        if(!session)
+            return NextResponse.json("Unauthorized", {status: 401});
+        
         const ticket = await prisma.ticket.findUnique({
             where: { id: parseInt(params.id) }
         });
