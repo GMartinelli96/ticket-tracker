@@ -6,6 +6,7 @@ import TicketDettaglio from '../_components/TicketDettaglio'
 import EliminaTicketButton from '../_components/EliminaTicketButton'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import IncaricatoSelect from '../_components/IncaricatoSelect'
 
 interface Props{
     params:{
@@ -32,6 +33,7 @@ const TicketDettaglioPage = async ({ params }: Props) => {
             { session &&
                 <Box>
                     <Flex direction="column" gap="4" >
+                        <IncaricatoSelect />
                         <ModificaTicketButton ticketId={ticket.id} />
                         <EliminaTicketButton ticketId={ticket.id} />
                     </Flex>
