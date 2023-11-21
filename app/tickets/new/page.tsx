@@ -1,7 +1,12 @@
 "use client";
 
-import { Button, TextArea, TextField } from '@radix-ui/themes'
 import React from 'react'
+import { Button, TextField } from '@radix-ui/themes'
+
+//Import necessari per il MarkDownEditor
+import "easymde/dist/easymde.min.css";
+import SimpleMDE from "react-simplemde-editor";
+
 
 const NewTicketPage = () => {
   return (
@@ -9,7 +14,7 @@ const NewTicketPage = () => {
         <TextField.Root>
           <TextField.Input placeholder='Titolo' />
         </TextField.Root>    
-        <TextArea placeholder='Descrizione problema' />
+        <SimpleMDE placeholder='Descrizione problema' />
         <Button>Crea nuovo ticket</Button>
     </div>
   )
