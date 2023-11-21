@@ -27,26 +27,27 @@ const NewTicketPage = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const onSubmit = handleSubmit(async (data) => {
+    try{
+      setIsSubmitting(true);
+      await axios.post('/api/ticketssss', data)
+
+      //Dopo aver salvato il ticket mando l'utente alla pagina dei ticket
+      router.push('/tickets')
+    }
+    catch(err){
+      setError("Qualcosa è andato storto nell'inserimento del ticket!")          
+    }
+    finally{
+      setIsSubmitting(false);
+    }
+  })
+
   return (
     <div className='max-w-xl'>
       <form 
         className='space-y-3' 
-        onSubmit={handleSubmit(async (data) => {
-          try{
-            setIsSubmitting(true);
-            await axios.post('/api/ticketssss', data)
-    
-            //Dopo aver salvato il ticket mando l'utente alla pagina dei ticket
-            router.push('/tickets')
-          }
-          catch(err){
-            setError("Qualcosa è andato storto nell'inserimento del ticket!")          
-          }
-          finally{
-            setIsSubmitting(false);
-          }
-          
-        })}
+        onSubmit={onSubmit}
       >
           <TextField.Root>
             <TextField.Input 
