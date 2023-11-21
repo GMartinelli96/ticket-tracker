@@ -38,3 +38,28 @@ export async function PATCH(
     }
 
 }
+
+
+export async function DELETE(
+    req: NextRequest, 
+    { params }: { params: { id: string } } 
+) {
+    try{
+        const ticket = await prisma.ticket.findUnique({
+            where: { id: parseInt(params.id) }
+        });
+        if(!ticket) 
+            return new NextResponse("Ticket non valido", { status: 500 });
+
+        await prisma.ticket.delete({
+            where: { id: ticket.id },
+        });
+
+        return NextResponse.json({});
+    }
+    catch(error){
+        console.log("[TICKETS_ID_DELETE]", error);
+        return new NextResponse("Internal Error", { status: 500 });
+    }
+
+}
