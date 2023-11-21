@@ -1,10 +1,8 @@
-import TicketStatoBadge from '@/app/components/TicketStatoBadge'
 import prisma from '@/prisma/client'
-import { Box, Card, Flex, Grid, Heading, Text } from '@radix-ui/themes'
+import { Box, Grid } from '@radix-ui/themes'
 import { notFound } from 'next/navigation'
-import ReactMarkdown from 'react-markdown'
-import ModificaTicketButton from './ModificaTicketButton'
-import TicketDettaglio from './TicketDettaglio'
+import ModificaTicketButton from '../_components/ModificaTicketButton'
+import TicketDettaglio from '../_components/TicketDettaglio'
 
 interface Props{
     params:{
