@@ -3,18 +3,14 @@ import { Button, Table } from '@radix-ui/themes'
 import Link from 'next/link'
 import prisma from '@/prisma/client'
 import TicketStatoBadge from '../components/TicketStatoBadge'
+import TicketActions from './TicketActions'
+
 const TicketsPage = async () => {
   const tickets = await prisma.ticket.findMany()
 
   return (
     <div>
-      <div className='mb-5'>
-        <Button>
-          <Link href="/tickets/new">
-            Nuovo Ticket
-          </Link>
-        </Button>
-      </div>
+      <TicketActions />
       
       <Table.Root variant='surface'>
         <Table.Header>
