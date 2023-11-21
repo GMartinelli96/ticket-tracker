@@ -1,9 +1,10 @@
 import TicketStatoBadge from '@/app/components/TicketStatoBadge'
 import prisma from '@/prisma/client'
-import { Card, Flex, Heading, Text } from '@radix-ui/themes'
+import { Box, Card, Flex, Grid, Heading, Text } from '@radix-ui/themes'
 import { notFound } from 'next/navigation'
-import React from 'react'
-import ReactMarkdown from 'react-markdown'; 
+import ReactMarkdown from 'react-markdown'
+import ModificaTicketButton from './ModificaTicketButton'
+import TicketDettaglio from './TicketDettaglio'
 
 interface Props{
     params:{
@@ -22,24 +23,14 @@ const TicketDettaglioPage = async ({ params }: Props) => {
         notFound();
 
     return (
-        <div>
-            <Heading as="h1">
-                {ticket.titolo}
-            </Heading>
-            
-            <Flex gap="3"  my="2">
-                <TicketStatoBadge stato={ticket.stato} />
-                <Text>
-                    {ticket.createdAt.toDateString()}
-                </Text>
-            </Flex>
-
-            <Card className='prose' mt="4">
-                <ReactMarkdown>
-                    {ticket.descrizione}
-                </ReactMarkdown>
-            </Card>
-        </div>
+        <Grid columns={{ initial: "1", md: "2"}} gap="5">
+            <Box>
+                <TicketDettaglio ticket={ticket} />
+            </Box>
+            <Box>
+                <ModificaTicketButton ticketId={ticket.id} />
+            </Box>
+        </Grid>
     )
 }
 
