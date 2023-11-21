@@ -1,18 +1,20 @@
 "use client";
 
+import { Spinner } from '@/app/components';
 import { TrashIcon } from '@radix-ui/react-icons';
 import { AlertDialog, Button, Flex } from '@radix-ui/themes';
 import axios from 'axios';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 const EliminaTicketButton = ( { ticketId }: {ticketId: number} ) => {
   const router = useRouter();
   const [error, setError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const eliminaTicket = async () => {
     try{
+      setIsDeleting(true);
       await axios.delete(`/api/tickets/${ticketId}`);
       router.push('/tickets');
       router.refresh();
@@ -20,15 +22,22 @@ const EliminaTicketButton = ( { ticketId }: {ticketId: number} ) => {
     catch(err){
       setError(true);
     }
+    finally{
+      setIsDeleting(false);
+    }
   }
 
   return (
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button color='red'>
+          <Button 
+            color='red'
+            disabled={isDeleting}
+          >
               <TrashIcon />
               Elimina Ticket
+              {isDeleting && <Spinner />}
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
