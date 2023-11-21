@@ -9,10 +9,11 @@ import { useRouter } from 'next/navigation';
 import { Button, Callout, Text, TextField } from '@radix-ui/themes'
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import z from 'zod';
+import z, { set } from 'zod';
 
 import { creaTicketSchema } from '@/app/validationSchemas';
 import MessaggioErrore from "@/app/components/MessaggioErrore";
+import Spinner from "@/app/components/Spinner";
 
 //Al posto di creare un'interfaccia uso lo schema, tanto la validazione è la stessa!
 type TicketForm = z.infer<typeof creaTicketSchema>
@@ -22,19 +23,17 @@ const NewTicketPage = () => {
   const { register, control, handleSubmit, formState: { errors } } = useForm<TicketForm>({
     resolver: zodResolver(creaTicketSchema),
   });
+  
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   return (
     <div className='max-w-xl'>
-      {error && (
-        <Callout.Root color="red" className='mb-5'>
-            <Callout.Text>{error}</Callout.Text>
-          </Callout.Root>
-      )}
       <form 
         className='space-y-3' 
         onSubmit={handleSubmit(async (data) => {
           try{
+            setIsSubmitting(true);
             await axios.post('/api/ticketssss', data)
     
             //Dopo aver salvato il ticket mando l'utente alla pagina dei ticket
@@ -42,6 +41,9 @@ const NewTicketPage = () => {
           }
           catch(err){
             setError("Qualcosa è andato storto nell'inserimento del ticket!")          
+          }
+          finally{
+            setIsSubmitting(false);
           }
           
         })}
@@ -70,7 +72,10 @@ const NewTicketPage = () => {
             {errors.descrizione?.message}
           </MessaggioErrore>
 
-          <Button>Crea nuovo ticket</Button>
+          <Button disabled={isSubmitting}>
+            Crea nuovo ticket
+            {isSubmitting && <Spinner />}
+          </Button>
       </form>
     </div>
   )
