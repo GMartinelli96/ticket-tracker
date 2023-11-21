@@ -45,6 +45,8 @@ const TicketForm = ( { ticket } : { ticket?: Ticket}) => {
 
       //Dopo aver salvato il ticket mando l'utente alla pagina dei ticket
       router.push('/tickets')
+      //Forzo il refresh della pagina dei ticket
+      router.refresh();
     }
     catch(err){
       setError("Qualcosa è andato storto nell'inserimento del ticket!")          

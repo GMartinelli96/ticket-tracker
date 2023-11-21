@@ -46,4 +46,7 @@ const TicketsPage = async () => {
   )
 }
 
+//Serve per forzare la non-cache della pagina! Dice dopo quanti secondi deve essere rivalidata la pagina!
+export const revalidate = 0;
+
 export default TicketsPage
