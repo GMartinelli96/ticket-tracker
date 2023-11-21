@@ -1,23 +1,26 @@
 "use client";
-
-import { useState } from 'react';
-import { Button, Callout, TextField } from '@radix-ui/themes'
-import { useForm, Controller } from "react-hook-form";
-import axios from 'axios';
-
 //Import necessari per il MarkDownEditor
 import "easymde/dist/easymde.min.css";
 import SimpleMDE from "react-simplemde-editor";
-import { useRouter } from 'next/navigation';
 
-interface TicketForm {
-  titolo: string;
-  descrizione: string;
-}
+import axios from 'axios';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button, Callout, Text, TextField } from '@radix-ui/themes'
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
+
+import { creaTicketSchema } from '@/app/validationSchemas';
+
+//Al posto di creare un'interfaccia uso lo schema, tanto la validazione è la stessa!
+type TicketForm = z.infer<typeof creaTicketSchema>
 
 const NewTicketPage = () => {
   const router = useRouter();
-  const { register, control, handleSubmit } = useForm<TicketForm>();
+  const { register, control, handleSubmit, formState: { errors } } = useForm<TicketForm>({
+    resolver: zodResolver(creaTicketSchema),
+  });
   const [error, setError] = useState('');
 
   return (
@@ -45,10 +48,15 @@ const NewTicketPage = () => {
           <TextField.Root>
             <TextField.Input 
               placeholder='Titolo' 
-              {...register("titolo", { required: true })}
+              {...register("titolo")}
             />
           </TextField.Root>    
-          
+          {errors.titolo && (
+            <Text color="red" as="p">
+              {errors.titolo.message}
+            </Text>
+          )}
+
           <Controller 
             name='descrizione'
             control={control}
@@ -58,7 +66,12 @@ const NewTicketPage = () => {
                 {...field}
               />
             )}
-          />
+          />    
+          {errors.descrizione && (
+            <Text color="red" as="p">
+              {errors.descrizione.message}
+            </Text>
+          )}
 
           <Button>Crea nuovo ticket</Button>
       </form>

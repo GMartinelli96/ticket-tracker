@@ -1,11 +1,6 @@
 import prisma from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import * as z from "zod";
-
-const creaTicketSchema = z.object({
-    titolo: z.string().min(1, 'Titolo è obbligatorio').max(255, 'Titolo troppo lungo! Massimo 255 caratteri consentiti!'),
-    descrizione: z.string().min(1, 'Descrizione è obbligatoria'),
-});
+import { creaTicketSchema } from "../../validationSchemas";
 
 export async function POST(req: NextRequest){
     const body = await req.json();
