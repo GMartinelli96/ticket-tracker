@@ -5,6 +5,8 @@ import { Ticket, User } from '@prisma/client';
 import { Select } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const IncaricatoSelect = ( { ticket } : { ticket: Ticket} ) => {
     const { data: utenti, error, isLoading} = useQuery<User[]>({
@@ -21,25 +23,35 @@ const IncaricatoSelect = ( { ticket } : { ticket: Ticket} ) => {
         return null;
 
     return (
-        <Select.Root 
-            defaultValue={ticket.incaricatoId || ''}
-            onValueChange={(userId) => 
-            axios.patch(`/api/tickets/${ticket.id}`, { incaricatoId:  (userId !== "NonAssegnato" ? userId : null) })
-            }
-        >
-            <Select.Trigger placeholder='Assegna...' />
-            <Select.Content>
-                <Select.Group>
-                    <Select.Label>Seleziona incaricato</Select.Label>
-                    <Select.Item value="NonAssegnato">Non assegnato</Select.Item>
-                    {utenti?.map((utente) => (
-                        <Select.Item key={utente.id} value={utente.id}>
-                            {utente.name}
-                        </Select.Item>
-                    ))}
-                </Select.Group>
-            </Select.Content>
-        </Select.Root>
+        <>
+            <Select.Root 
+                defaultValue={ticket.incaricatoId || ''}
+                onValueChange={async (userId) => {
+                    try{
+                        await axios.patch(`/api/tickets/${ticket.id}`, { 
+                            incaricatoId:  (userId !== "NonAssegnato" ? userId : null) 
+                        })
+                    }
+                    catch(error){
+                        toast.error('Errore durante l\'assegnazione del ticket!')
+                    }
+                }}
+            >
+                <Select.Trigger placeholder='Assegna...' />
+                <Select.Content>
+                    <Select.Group>
+                        <Select.Label>Seleziona incaricato</Select.Label>
+                        <Select.Item value="NonAssegnato">Non assegnato</Select.Item>
+                        {utenti?.map((utente) => (
+                            <Select.Item key={utente.id} value={utente.id}>
+                                {utente.name}
+                            </Select.Item>
+                        ))}
+                    </Select.Group>
+                </Select.Content>
+            </Select.Root>
+            <Toaster />
+        </>
     )
 }
 
