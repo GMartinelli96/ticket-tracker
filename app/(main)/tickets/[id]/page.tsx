@@ -1,8 +1,9 @@
 import prisma from '@/prisma/client'
-import { Box, Grid } from '@radix-ui/themes'
+import { Box, Flex, Grid } from '@radix-ui/themes'
 import { notFound } from 'next/navigation'
 import ModificaTicketButton from '../_components/ModificaTicketButton'
 import TicketDettaglio from '../_components/TicketDettaglio'
+import EliminaTicketButton from '../_components/EliminaTicketButton'
 
 interface Props{
     params:{
@@ -21,12 +22,15 @@ const TicketDettaglioPage = async ({ params }: Props) => {
         notFound();
 
     return (
-        <Grid columns={{ initial: "1", md: "2" }} gap="5">
-            <Box>
+        <Grid columns={{ initial: "1", sm: "5" }} gap="5">
+            <Box className='md:col-span-4'>
                 <TicketDettaglio ticket={ticket} />
             </Box>
             <Box>
-                <ModificaTicketButton ticketId={ticket.id} />
+                <Flex direction="column" gap="4" >
+                    <ModificaTicketButton ticketId={ticket.id} />
+                    <EliminaTicketButton ticketId={ticket.id} />
+                </Flex>
             </Box>
         </Grid>
     )
