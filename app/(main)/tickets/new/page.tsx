@@ -1,22 +1,29 @@
 "use client";
 //Import necessari per il MarkDownEditor
 import "easymde/dist/easymde.min.css";
-import SimpleMDE from "react-simplemde-editor";
 
-import axios from 'axios';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Button, Callout, Text, TextField } from '@radix-ui/themes'
-import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from '@hookform/resolvers/zod';
-import z, { set } from 'zod';
+import { Button, TextField } from '@radix-ui/themes';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Controller, useForm } from "react-hook-form";
+import z from 'zod';
+import dynamic from "next/dynamic";
 
-import { creaTicketSchema } from '@/app/validationSchemas';
 import MessaggioErrore from "@/app/components/MessaggioErrore";
 import Spinner from "@/app/components/Spinner";
+import { creaTicketSchema } from '@/app/validationSchemas';
 
 //Al posto di creare un'interfaccia uso lo schema, tanto la validazione è la stessa!
 type TicketForm = z.infer<typeof creaTicketSchema>
+
+//Disabilito SSR per il MDE, infatti questo ha interazioni col client e non va bene!
+const SimpleMDE = dynamic(
+  () => import("react-simplemde-editor"), 
+  {
+    ssr: false,
+  }) 
 
 const NewTicketPage = () => {
   const router = useRouter();
@@ -30,7 +37,7 @@ const NewTicketPage = () => {
   const onSubmit = handleSubmit(async (data) => {
     try{
       setIsSubmitting(true);
-      await axios.post('/api/ticketssss', data)
+      await axios.post('/api/tickets', data)
 
       //Dopo aver salvato il ticket mando l'utente alla pagina dei ticket
       router.push('/tickets')

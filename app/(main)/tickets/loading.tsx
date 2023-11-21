@@ -1,8 +1,9 @@
 import React from 'react'
 import { Table } from '@radix-ui/themes'
+import TicketActions from './TicketActions'
+
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import TicketActions from './TicketActions'
 
 const CaricamentoTicketPage = () => {
     const tickets = [1,2,3,4,5]
