@@ -12,6 +12,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 
 import { creaTicketSchema } from '@/app/validationSchemas';
+import MessaggioErrore from "@/app/components/MessaggioErrore";
 
 //Al posto di creare un'interfaccia uso lo schema, tanto la validazione è la stessa!
 type TicketForm = z.infer<typeof creaTicketSchema>
@@ -51,11 +52,9 @@ const NewTicketPage = () => {
               {...register("titolo")}
             />
           </TextField.Root>    
-          {errors.titolo && (
-            <Text color="red" as="p">
-              {errors.titolo.message}
-            </Text>
-          )}
+          <MessaggioErrore>
+            {errors.titolo?.message}
+          </MessaggioErrore>
 
           <Controller 
             name='descrizione'
@@ -67,11 +66,9 @@ const NewTicketPage = () => {
               />
             )}
           />    
-          {errors.descrizione && (
-            <Text color="red" as="p">
-              {errors.descrizione.message}
-            </Text>
-          )}
+          <MessaggioErrore>
+            {errors.descrizione?.message}
+          </MessaggioErrore>
 
           <Button>Crea nuovo ticket</Button>
       </form>
