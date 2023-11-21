@@ -1,13 +1,12 @@
 "use client";
 
-import { User } from '@prisma/client';
-import { Select } from '@radix-ui/themes'
+import { Skeleton } from '@/app/components';
+import { Ticket, User } from '@prisma/client';
+import { Select } from '@radix-ui/themes';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useEffect } from 'react'
-import { Skeleton } from '@/app/components';
 
-const IncaricatoSelect = () => {
+const IncaricatoSelect = ( { ticket } : { ticket: Ticket} ) => {
     const { data: utenti, error, isLoading} = useQuery<User[]>({
         queryKey: ['utenti'],
         queryFn: async () =>  axios.get<User[]>('/api/utenti').then((res) => res.data),
@@ -22,11 +21,17 @@ const IncaricatoSelect = () => {
         return null;
 
     return (
-        <Select.Root>
+        <Select.Root 
+            defaultValue={ticket.incaricatoId || ''}
+            onValueChange={(userId) => 
+            axios.patch(`/api/tickets/${ticket.id}`, { incaricatoId:  (userId !== "NonAssegnato" ? userId : null) })
+            }
+        >
             <Select.Trigger placeholder='Assegna...' />
             <Select.Content>
                 <Select.Group>
                     <Select.Label>Seleziona incaricato</Select.Label>
+                    <Select.Item value="NonAssegnato">Non assegnato</Select.Item>
                     {utenti?.map((utente) => (
                         <Select.Item key={utente.id} value={utente.id}>
                             {utente.name}
