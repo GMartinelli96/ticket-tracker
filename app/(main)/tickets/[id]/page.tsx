@@ -21,7 +21,7 @@ const TicketDettaglioPage = async ({ params }: Props) => {
         notFound();
 
     return (
-        <Grid columns={{ initial: "1", md: "2"}} gap="5">
+        <Grid columns={{ initial: "1", md: "2" }} gap="5">
             <Box>
                 <TicketDettaglio ticket={ticket} />
             </Box>

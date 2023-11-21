@@ -13,11 +13,11 @@ import z from 'zod';
 
 import MessaggioErrore from "@/app/components/MessaggioErrore";
 import Spinner from "@/app/components/Spinner";
-import { creaTicketSchema } from '@/app/validationSchemas';
+import { ticketSchema } from '@/app/validationSchemas';
 import { Ticket } from "@prisma/client";
 
 //Al posto di creare un'interfaccia uso lo schema, tanto la validazione è la stessa!
-type TicketFormData = z.infer<typeof creaTicketSchema>
+type TicketFormData = z.infer<typeof ticketSchema>
 
 //Disabilito SSR per il MDE, infatti questo ha interazioni col client e non va bene!
 const SimpleMDE = dynamic(
@@ -29,7 +29,7 @@ const SimpleMDE = dynamic(
 const TicketForm = ( { ticket } : { ticket?: Ticket}) => {
   const router = useRouter();
   const { register, control, handleSubmit, formState: { errors } } = useForm<TicketFormData>({
-    resolver: zodResolver(creaTicketSchema),
+    resolver: zodResolver(ticketSchema),
   });
   
   const [error, setError] = useState('');
@@ -38,7 +38,10 @@ const TicketForm = ( { ticket } : { ticket?: Ticket}) => {
   const onSubmit = handleSubmit(async (data) => {
     try{
       setIsSubmitting(true);
-      await axios.post('/api/tickets', data)
+      if(ticket)
+        await axios.patch(`/api/tickets/${ticket.id}`, data)
+      else
+        await axios.post('/api/tickets', data)
 
       //Dopo aver salvato il ticket mando l'utente alla pagina dei ticket
       router.push('/tickets')
@@ -84,7 +87,7 @@ const TicketForm = ( { ticket } : { ticket?: Ticket}) => {
           </MessaggioErrore>
 
           <Button disabled={isSubmitting}>
-            Crea nuovo ticket
+            {ticket ? "Modifica ticket" : "Inserisci nuovo ticket"}{" "}
             {isSubmitting && <Spinner />}
           </Button>
       </form>
