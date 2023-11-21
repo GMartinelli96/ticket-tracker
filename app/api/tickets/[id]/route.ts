@@ -1,4 +1,4 @@
-import { ticketSchema } from "@/app/validationSchemas";
+import { patchTicketSchema, ticketSchema } from "@/app/validationSchemas";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/prisma/client";
 import { request } from "http";
@@ -15,10 +15,22 @@ export async function PATCH(
             return NextResponse.json("Unauthorized", {status: 401});
 
         const body = await req.json();
-        const validation = ticketSchema.safeParse(body);
-
+        const validation = patchTicketSchema.safeParse(body);
         if(!validation.success) 
             return NextResponse.json(validation.error.format(), { status: 400 });
+
+        const { incaricatoId, titolo, descrizione } = body;
+
+        if(incaricatoId){
+            const user = await prisma.user.findUnique({
+                where: { 
+                    id: incaricatoId 
+                }
+            });
+
+            if(!user) 
+                return new NextResponse("Utente non valido", { status: 400 });
+        }
 
         const ticket = await prisma.ticket.findUnique({
             where: { id: parseInt(params.id) }
@@ -29,8 +41,9 @@ export async function PATCH(
         const ticketAggiornato = await prisma.ticket.update({
             where: { id: ticket.id },
             data: {
-                titolo: body.titolo,
-                descrizione: body.descrizione,
+                titolo,
+                descrizione,
+                incaricatoId
             }
         });
 
