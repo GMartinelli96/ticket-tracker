@@ -2,9 +2,13 @@
 
 import { TrashIcon } from '@radix-ui/react-icons';
 import { AlertDialog, Button, Flex } from '@radix-ui/themes';
+import axios from 'axios';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const EliminaTicketButton = ( { ticketId }: {ticketId: number} ) => {
+  const router = useRouter();
+
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger>
@@ -24,7 +28,15 @@ const EliminaTicketButton = ( { ticketId }: {ticketId: number} ) => {
             <Button variant='soft' color='gray'>Annulla</Button>
           </AlertDialog.Cancel>
           <AlertDialog.Action>
-            <Button color='red'>Elimina ticket</Button>
+            <Button 
+              color='red'
+              onClick={async () => {
+                await axios.delete(`/api/tickets/${ticketId}`);
+                router.push('/tickets');
+                router.refresh();
+              }}>
+              Elimina ticket
+            </Button>
           </AlertDialog.Action>
         </Flex>
       </AlertDialog.Content>
