@@ -1,9 +1,8 @@
 import React from 'react'
-import { Link, Table } from '@radix-ui/themes' 
+import { Table } from '@radix-ui/themes' 
 import prisma from '@/prisma/client'
-import TicketStatoBadge from '@/app/components/TicketStatoBadge'
 import TicketActions from './TicketActions'
-
+import { Link, TicketStatoBadge } from '@/app/components'
 
 const TicketsPage = async () => {
   const tickets = await prisma.ticket.findMany()
