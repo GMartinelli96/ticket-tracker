@@ -1,15 +1,17 @@
-import { Button, Link } from '@radix-ui/themes'
+import { Button, Flex, Link } from '@radix-ui/themes'
 import React from 'react'
+import TicketStatoFilter from './TicketStatoFilter'
 
 const TicketActions = () => {
     return (
-    <div className='mb-5'>
+    <Flex mb='5' justify='between'>
+        <TicketStatoFilter />
         <Button>
         <Link href="/tickets/new">
             Nuovo Ticket
         </Link>
         </Button>
-    </div>
+    </Flex>
     )
 }
 

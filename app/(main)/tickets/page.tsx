@@ -1,7 +1,7 @@
 import React from 'react'
 import { Table } from '@radix-ui/themes' 
 import prisma from '@/prisma/client'
-import TicketActions from './TicketActions'
+import TicketActions from './_components/TicketActions'
 import { Link, TicketStatoBadge } from '@/app/components'
 
 const TicketsPage = async () => {

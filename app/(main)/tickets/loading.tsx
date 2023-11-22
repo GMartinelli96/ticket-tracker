@@ -1,6 +1,6 @@
 import { Skeleton } from '@/app/components'
 import { Table } from '@radix-ui/themes'
-import TicketActions from './TicketActions'
+import TicketActions from './_components/TicketActions'
 
 const CaricamentoTicketPage = () => {
     const tickets = [1,2,3,4,5]
