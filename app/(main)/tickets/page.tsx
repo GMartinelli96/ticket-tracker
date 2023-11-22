@@ -5,12 +5,14 @@ import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons'
 import { Table } from '@radix-ui/themes'
 import NextLink from 'next/link'
 import TicketActions from './_components/TicketActions'
+import Pagination from '@/app/components/Pagination'
 
 interface Props{
   searchParams : {
     stato: TicketStato,
     orderBy: keyof Ticket,
-    orderByDirection: 'asc' | 'desc'
+    orderByDirection: 'asc' | 'desc',
+    page: string
   } 
 }
 
@@ -33,6 +35,12 @@ const TicketsPage = async ( { searchParams } : Props) => {
   const statiTicket = Object.values(TicketStato);
   const statoTicket = statiTicket.includes(searchParams.stato) ? searchParams.stato : undefined;
   
+  //Implemento le condizioni where in un oggetto in modo che non devo ripetere il codice per le condizioni where nelle 2 query
+  const where = {
+    stato: statoTicket
+  }
+
+
   const orderByDirection = searchParams.orderByDirection === 'asc' ? 'asc' : 'desc';
   const orderBy = colonne
     .map((colonna) => colonna.value)
@@ -40,11 +48,20 @@ const TicketsPage = async ( { searchParams } : Props) => {
       ? { [searchParams.orderBy]: orderByDirection }
       : undefined;
 
+  //Implemento paginazione
+  const page = parseInt(searchParams.page) || 1;
+  const pageSize = 10;
+
   const tickets = await prisma.ticket.findMany({
-    where:{
-      stato: statoTicket
-    },
-    orderBy
+    where,
+    orderBy,
+
+    skip: (page - 1) * pageSize,
+    take: pageSize,
+  });
+
+  const ticketCount = await prisma.ticket.count({
+    where
   });
 
   return (
@@ -92,6 +109,7 @@ const TicketsPage = async ( { searchParams } : Props) => {
 
         </Table.Body>
       </Table.Root>
+      <Pagination pageSize={pageSize} currentPage={page} itemCount={ticketCount} />
     </div>
     
   )
