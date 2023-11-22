@@ -1,28 +1,50 @@
-import React from 'react'
-import { Table } from '@radix-ui/themes' 
-import prisma from '@/prisma/client'
-import TicketActions from './_components/TicketActions'
 import { Link, TicketStatoBadge } from '@/app/components'
-import { TicketStato } from '@prisma/client'
+import prisma from '@/prisma/client'
+import { Ticket, TicketStato } from '@prisma/client'
+import { ArrowDownIcon, ArrowUpIcon } from '@radix-ui/react-icons'
+import { Table } from '@radix-ui/themes'
+import NextLink from 'next/link'
+import TicketActions from './_components/TicketActions'
 
 interface Props{
   searchParams : {
-    stato: TicketStato
+    stato: TicketStato,
+    orderBy: keyof Ticket,
+    orderByDirection: 'asc' | 'desc'
   } 
 }
 
 const TicketsPage = async ( { searchParams } : Props) => {
+  const colonne: { label: string; value: keyof Ticket; className?: string; }[] = [
+    { label: "Ticket", value: "titolo" },
+    {
+      label: "Stato",
+      value: "stato",
+      className: "hidden md:table-cell",
+    },
+    {
+      label: "Data creazione",
+      value: "createdAt",
+      className: "hidden md:table-cell",
+    },
+  ];
+
   //Controllo se lo stato in searchparams è un TicketStato, sennò nullo
   const statiTicket = Object.values(TicketStato);
   const statoTicket = statiTicket.includes(searchParams.stato) ? searchParams.stato : undefined;
+  
+  const orderByDirection = searchParams.orderByDirection === 'asc' ? 'asc' : 'desc';
+  const orderBy = colonne
+    .map((colonna) => colonna.value)
+    .includes(searchParams.orderBy) 
+      ? { [searchParams.orderBy]: orderByDirection }
+      : undefined;
 
   const tickets = await prisma.ticket.findMany({
     where:{
       stato: statoTicket
     },
-    orderBy: {
-      createdAt: 'desc'
-    }
+    orderBy
   });
 
   return (
@@ -32,9 +54,17 @@ const TicketsPage = async ( { searchParams } : Props) => {
       <Table.Root variant='surface'>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Ticket</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell'>Stato</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell'>Data creazione</Table.ColumnHeaderCell>
+            {colonne.map((colonna) => (
+              <Table.ColumnHeaderCell key={colonna.value}>
+                <NextLink 
+                  href={{ query: { ...searchParams, orderBy: colonna.value, orderByDirection: orderByDirection === 'asc' ? 'desc' : 'asc' }}}
+                >
+                  {colonna.label}
+                </NextLink>
+                {colonna.value === searchParams.orderBy && orderByDirection == 'asc' && <ArrowUpIcon className="inline"/>}
+                {colonna.value === searchParams.orderBy && orderByDirection == 'desc' && <ArrowDownIcon className="inline"/>}
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
         <Table.Body>
