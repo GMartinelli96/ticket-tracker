@@ -2,6 +2,7 @@
 
 import { TicketStato } from '@prisma/client'
 import { Select } from '@radix-ui/themes'
+import { useRouter } from 'next/navigation';
 import React from 'react'
 
 const stati: {label:string, value?: TicketStato }[] = [
@@ -12,18 +13,23 @@ const stati: {label:string, value?: TicketStato }[] = [
 ]
 
 const TicketStatoFilter = () => {
-  return (
-    <Select.Root>
-        <Select.Trigger placeholder='Filtra per stato...' />
-        <Select.Content>
-            {stati.map((s, i) => (
-                <Select.Item key={i} value={s.value || ''}>
-                    {s.label}
-                </Select.Item>
-            ))}
-        </Select.Content>
-    </Select.Root>
-  )
+    const router = useRouter();
+
+    return (
+        <Select.Root onValueChange={(stato) => {
+            const query = stato && stato !== 'nonselezionato' ? `?stato=${stato}` : ''
+            router.push(`/tickets${query}`)
+        }}>
+            <Select.Trigger placeholder='Filtra per stato...' />
+            <Select.Content>
+                {stati.map((s, i) => (
+                    <Select.Item key={i} value={s.value || 'nonselezionato'}>
+                        {s.label}
+                    </Select.Item>
+                ))}
+            </Select.Content>
+        </Select.Root>
+    )
 }
 
 export default TicketStatoFilter

@@ -3,9 +3,27 @@ import { Table } from '@radix-ui/themes'
 import prisma from '@/prisma/client'
 import TicketActions from './_components/TicketActions'
 import { Link, TicketStatoBadge } from '@/app/components'
+import { TicketStato } from '@prisma/client'
 
-const TicketsPage = async () => {
-  const tickets = await prisma.ticket.findMany()
+interface Props{
+  searchParams : {
+    stato: TicketStato
+  } 
+}
+
+const TicketsPage = async ( { searchParams } : Props) => {
+  //Controllo se lo stato in searchparams è un TicketStato, sennò nullo
+  const statiTicket = Object.values(TicketStato);
+  const statoTicket = statiTicket.includes(searchParams.stato) ? searchParams.stato : undefined;
+
+  const tickets = await prisma.ticket.findMany({
+    where:{
+      stato: statoTicket
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
 
   return (
     <div>
