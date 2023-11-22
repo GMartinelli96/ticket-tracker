@@ -36,3 +36,5 @@ next-env.d.ts
 
 #Migrazioni
 /prisma/migrations
+
+.vscode
