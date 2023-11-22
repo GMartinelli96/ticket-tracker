@@ -55,7 +55,10 @@ const TicketsPage = async ( { searchParams } : Props) => {
         <Table.Header>
           <Table.Row>
             {colonne.map((colonna) => (
-              <Table.ColumnHeaderCell key={colonna.value}>
+              <Table.ColumnHeaderCell 
+                key={colonna.value} 
+                className={colonna.className}
+              >
                 <NextLink 
                   href={{ query: { ...searchParams, orderBy: colonna.value, orderByDirection: orderByDirection === 'asc' ? 'desc' : 'asc' }}}
                 >
