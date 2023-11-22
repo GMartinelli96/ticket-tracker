@@ -4,6 +4,7 @@ import { TicketStato } from "@prisma/client";
 import TicketGrafici from "./components/TicketGrafici";
 import { Flex, Grid } from "@radix-ui/themes";
 import UltimiTicket from "./components/UltimiTicket";
+import { Metadata } from "next";
 
 export default async function Home() {
   const aperti = await prisma.ticket.count({
@@ -24,3 +25,9 @@ export default async function Home() {
       <UltimiTicket />
   </Grid>;
 }
+
+
+export const metadata: Metadata = {
+  title: 'Issue Tracker - Dashboard',
+  description: 'Visualizza un riepilogo dei ticket del progetto'
+};

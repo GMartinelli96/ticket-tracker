@@ -4,10 +4,20 @@ import { TicketStato } from '@prisma/client'
 import TicketActions from './_components/TicketActions'
 import TicketTable, { TicketQuery, ticketNomiColonne } from './_components/TicketTable'
 import { Flex } from '@radix-ui/themes'
+import { Metadata } from 'next'
 
 interface Props{
   searchParams : TicketQuery
 }
+
+//Serve per forzare la non-cache della pagina! Dice dopo quanti secondi deve essere rivalidata la pagina!
+export const revalidate = 0;
+
+export const metadata: Metadata = {
+  title: 'Issue Tracker - Elenco Ticket',
+  description: 'Visualizza tutti i ticket del progetto!'
+};
+
 
 const TicketsPage = async ( { searchParams } : Props) => {
   
@@ -53,8 +63,5 @@ const TicketsPage = async ( { searchParams } : Props) => {
     
   )
 }
-
-//Serve per forzare la non-cache della pagina! Dice dopo quanti secondi deve essere rivalidata la pagina!
-export const revalidate = 0;
 
 export default TicketsPage
