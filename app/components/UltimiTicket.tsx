@@ -23,7 +23,7 @@ const UltimiTicket = async () => {
               <Table.Cell>
                 <Flex justify="between">
                   <Flex direction="column" align="start" gap="2">
-                    <Link href={`/issues/${ticket.id}`}>
+                    <Link href={`/tickets/${ticket.id}`}>
                       {ticket.titolo}
                     </Link>
                     <TicketStatoBadge stato={ticket.stato} />
