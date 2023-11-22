@@ -4,7 +4,7 @@ import TicketStatoFilter from './TicketStatoFilter'
 
 const TicketActions = () => {
     return (
-    <Flex mb='5' justify='between'>
+    <Flex justify='between'>
         <TicketStatoFilter />
         <Button>
         <Link href="/tickets/new">
