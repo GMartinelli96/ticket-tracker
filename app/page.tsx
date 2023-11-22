@@ -1,6 +1,7 @@
 import prisma from "@/prisma/client";
 import RiepilogoTicket from "./components/RiepilogoTicket";
 import { TicketStato } from "@prisma/client";
+import TicketGrafici from "./components/TicketGrafici";
 
 export default async function Home() {
   const aperti = await prisma.ticket.count({
@@ -13,5 +14,5 @@ export default async function Home() {
     where: { stato: TicketStato.CHIUSO },
   });
 
-  return <RiepilogoTicket aperti={aperti} inLavorazione={inLavorazione} chiusi={chiusi} />;
+  return <TicketGrafici aperti={aperti} inLavorazione={inLavorazione} chiusi={chiusi} />;
 }
